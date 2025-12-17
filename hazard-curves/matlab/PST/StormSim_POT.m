@@ -127,8 +127,9 @@ stm_col(1:id(1)-1,1) = index(1:id(1)-1);
 Resp_peak = NaN(length(dt2),length(id));
 Resp_peak(1:id(1)-1,1) = Resp(index(1:id(1)-1));
 
+id
 for k = 2:length(id)
-    id2 = id(k-1):id(k)-1;
+    id2 = id(k-1):id(k)-1
     stm_col(id2-(id(k-1)-1),k) = index(id2);
     Resp_peak(id2-(id(k-1)-1),k) = Resp(index(id2));
 end

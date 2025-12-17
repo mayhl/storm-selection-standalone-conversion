@@ -31,9 +31,27 @@ rng('default');
 Nstrm = size(empHC,1);
 dlt = abs(diff(empHC)); dlt = [dlt;dlt(end)];
 boot=zeros(Nsim,Nstrm);
+rand_vals = zeros(Nsim,Nstrm);
+    
+
+idxs = zeros(Nsim,Nstrm);
 for i = 1:Nsim
     [x,idx] = datasample(empHC,Nstrm);
-    y = x + randn(Nstrm,1).*dlt(idx);
-    boot(i,:) = sort(y,'descend')';
+    idxs(i,:) = idx;
+    test =  randn(Nstrm,1);
+    rand_vals(i,:) = test ;
+    % y = x + randn(Nstrm,1).*dlt(idx);
+    y = x + test.*dlt(idx);
+    boot(i,:) =  sort(y,'descend')';
+
+
+
 end
+
+% Saving random data for validation in Python
+save("../tests/data/ecdf_emphc.mat", '-v7', "empHC") 
+save("../tests/data/ecdf_random.mat", '-v7', "rand_vals") 
+save("../tests/data/ecdf_indices.mat", '-v7', "idxs") 
+save("../tests/data/ecdf_boot.mat", '-v7', "boot") 
+
 end

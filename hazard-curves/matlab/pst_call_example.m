@@ -41,7 +41,7 @@ plot_options.(XX), where XX represents
 
 %% LOAD EXAMPLE DATA
 % Add Dependencies
-addpath('PST\');
+addpath('PST/');
 % This is the use case for processing a Peaks Over Threshold Dataset
 % Load CHS Timeseries Data
 load('SSv1.0_Forced_Sta50_2195_CHS-NA_SP6021.mat');
@@ -55,7 +55,7 @@ surge_pot = cellfun(@(x) max(x(:, 1)), storm.XC.Timeseries.Default(:, 2)); % Use
 %% CREATE INPUT DATA STRUCTURES
 % PST
 response_data = struct('data', [zeros(drows*dcols, 1) surge_pot(:) zeros(drows*dcols, 1)],...
-    'flag_value', [], 'SLC', config.swl_slr,...
+    'flag_value', [], 'SLC', 0, ... %% config.swl_slr,...
     'lambda', [],'Nyrs', Nyrs_XC*dcols, 'gprMdl', [], 'DataType', 'POT');
 % JPM Options
 eva_options = struct('ind_Skew', 0, 'use_AEP', 0,...
@@ -67,3 +67,26 @@ plot_options = struct('create_plots', 1,'staID', 'SSL', 'yaxis_Label', 'Surge [m
 
 %% CREATE HAZARD CURVE
 [PST_outputs] = StormSim_PST(response_data, eva_options, plot_options);
+
+% Saving data for validation in Python
+data = table2array(PST_outputs.MRL_output.Summary);
+save("../tests/data/pst_summary.mat", '-v7', "data") 
+
+% Don't need to check
+%data = table2array(PST_outputs.MRL_output.Selection);
+%save("../tests/data/pst_selection.mat", '-v7', "data")
+
+data = PST_outputs.HC_plt_x;
+save("../tests/data/pst_hc_plt_x.mat", '-v7', "data") 
+
+data = PST_outputs.HC_plt;
+save("../tests/data/pst_hc_plt.mat", '-v7', "data") 
+
+data = table2array(PST_outputs.HC_emp);
+save("../tests/data/pst_hc_emp.mat", '-v7', "data") 
+
+data = PST_outputs.MRL_output.pd_k_wOut;
+save("../tests/data/pst_pd_k_wOut.mat", '-v7', "data") 
+
+data = PST_outputs.MRL_output.pd_k_mod;
+save("../tests/data/pst_pd_k_mod.mat", '-v7', "data") 
